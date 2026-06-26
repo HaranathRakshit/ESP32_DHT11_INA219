@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 Master Connection Table</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 40px auto;
+            max-width: 900px;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #dddddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .component-col {
+            font-weight: bold;
+            color: #2980b9;
+            white-space: nowrap;
+        }
+
+        .pin-col {
+            font-weight: bold;
+            font-family: monospace;
+            background-color: #e8f4f8;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .target-col {
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        .section-row {
+            background-color: #ecf0f1;
+            font-weight: bold;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Master Connection Table: ESP32 + DHT11 + INA219</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Component</th>
+                <th>Pin Name</th>
+                <th>Target Connection</th>
+                <th>Description / Function</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="section-row">
+                <td colspan="4">Main Power Supply</td>
+            </tr>
+            <tr>
+                <td class="component-col">Power Supply</td>
+                <td><span class="pin-col">Charger (+)</span></td>
+                <td class="target-col">vin+ (INA219)</td>
+                <td>Routes the main 5.5V positive power into the sensor.</td>
+            </tr>
+            <tr>
+                <td class="component-col">Power Supply</td>
+                <td><span class="pin-col">Charger (-)</span></td>
+                <td class="target-col">GND (Breadboard)</td>
+                <td>The common ground reference for the entire system.</td>
+            </tr>
+            <tr>
+                <td class="component-col">ESP32 Board</td>
+                <td><span class="pin-col">GND</span></td>
+                <td class="target-col">GND (Breadboard)</td>
+                <td>Connects ESP32 ground to the common system ground. (CRITICAL for I2C logic reference)</td>
+            </tr>
+
+            <tr class="section-row">
+                <td colspan="4">INA219 (Load Path)</td>
+            </tr>
+            <tr>
+                <td class="component-col">INA219 Load</td>
+                <td><span class="pin-col">vin+</span></td>
+                <td class="target-col">Charger (+)</td>
+                <td>Receives the main positive power from the charger.</td>
+            </tr>
+            <tr>
+                <td class="component-col">INA219 Load</td>
+                <td><span class="pin-col">vin-</span></td>
+                <td class="target-col">V5 (ESP32 VIN)</td>
+                <td>Outputs the measured 5.5V power to run the ESP32.</td>
+            </tr>
+
+            <tr class="section-row">
+                <td colspan="4">INA219 (I2C Logic)</td>
+            </tr>
+            <tr>
+                <td class="component-col">INA219 Logic</td>
+                <td><span class="pin-col">VCC</span></td>
+                <td class="target-col">3V3 (ESP32)</td>
+                <td>3.3V logic power for the INA219 chip.</td>
+            </tr>
+            <tr>
+                <td class="component-col">INA219 Logic</td>
+                <td><span class="pin-col">GND</span></td>
+                <td class="target-col">GND (Breadboard)</td>
+                <td>Common ground.</td>
+            </tr>
+            <tr>
+                <td class="component-col">INA219 Logic</td>
+                <td><span class="pin-col">SDA</span></td>
+                <td class="target-col">G21 (GPIO 21)</td>
+                <td>I2C Data line.</td>
+            </tr>
+            <tr>
+                <td class="component-col">INA219 Logic</td>
+                <td><span class="pin-col">SCL</span></td>
+                <td class="target-col">G22 (GPIO 22)</td>
+                <td>I2C Clock line.</td>
+            </tr>
+
+            <tr class="section-row">
+                <td colspan="4">DHT11 (Sensor)</td>
+            </tr>
+            <tr>
+                <td class="component-col">DHT11</td>
+                <td><span class="pin-col">+ (VCC)</span></td>
+                <td class="target-col">3V3 (ESP32)</td>
+                <td>3.3V power for the temperature/humidity sensor.</td>
+            </tr>
+            <tr>
+                <td class="component-col">DHT11</td>
+                <td><span class="pin-col">- (GND)</span></td>
+                <td class="target-col">GND (Breadboard)</td>
+                <td>Common ground.</td>
+            </tr>
+            <tr>
+                <td class="component-col">DHT11</td>
+                <td><span class="pin-col">out</span></td>
+                <td class="target-col">G4 (GPIO 4)</td>
+                <td>Digital data signal for temp/humidity readings.</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+
+</html>
